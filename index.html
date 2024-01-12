@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特殊文字作成ツール</title>
+    <style>
+        input[type="text"] {
+            font-size: 1.5em;
+        }
+
+        button {
+            font-size: 1.5em;
+            background-color: #EEEEFF;
+            border-width: 2px; /* 枠線の幅 */
+            border-style: groove; /* スタイル指定 */
+            border-color: #88EEFF; /* 枠線色指定 */
+            border-radius: 5px; /* ボタンの形 */
+            height: 50px;
+            width: 35px;
+        }
+
+            .button1 {
+            height: 40px;                  /* 高さ指定 */
+            width:  280px;                  /* 幅指定 */
+         }
+
+        body {
+            background-color: #EAFFEA;
+        }
+  
+  
+@keyframes rainbow_animation {
+      0% { color: #FF0000; }
+      12.5% { color: #FF5500; }
+      25% { color: #FFFF00; }
+      37.5% { color: #00FF00; }
+      50% { color: #0000FF; }
+      62.5% { color: #AA00FF; }
+      75% { color: #FFO0FF; }
+      100% { color: #FF0000}
+    }
+
+    .rainbow_text {
+      display: inline-block;
+      animation: rainbow_animation 3s infinite linear;
+    }
+    </style>
+</head>
+<body>
+    <p><font size="5px">特殊文字作成ツール</font></p>
+    <p><font size="2.7px">特殊文字作れるで、これを作ったおさかなに感謝しろよ</font></p>
+    <label for="input_text">テキスト入力:</label>
+    <input type="text" id="input_text" placeholder="特殊文字化する文字を入力">
+    
+    <div id="special_letterbutton"></div>
+    <input type="text" id="outpurt_text" placeholder="ここに出力されます">
+    <button class="button1" onclick="copy_clipboard()">クリップボードにコピー</button>
+    <p>使い方<br>特殊文字にしたい文字を入れてね<br>
+        そしたらボタンがばーって出てくるから、入力したい文字のボタンを押してね<br>
+        コマンド一覧<br>
+        /amane - ？？？<br>
+        /circle [variation]- 丸付き文字を表示<br>
+        /dia - ダイアクリティカルマーク(装飾文字)を表示<br>
+        /tibet - チベット文字(一部除く)を表示<br>
+        circle内バリエーション　en/ja/nu
+    </p>
+  <p class="rainbow_text">super thanks:<br><b>天音</b></p>
+    <script>
+        const lettervariation = {
+            'a': 'aàáâãäåāǟāăąāǎǡǻȁȃȧḁẚạảấầẩẫậắằẳẵặⱥɐ∂ɑɒἀἁἂἃἄἅἆἇᾀᾁᾂᾃᾄᾅᾆᾇᾰᾱᾲᾳᾴᾶᾷɋ',
+            'A': 'AÀÁÂÃÄÅĀǞĀĂĄǍǠǺȀȂȦḀẠẢẤẦẨẪẬẮẰẲẴẶẰẲẴẶἈἉἊἋἌἍἎἏᾈᾉᾊᾋᾌᾍᾎᾏᾸᾹᾺΆᾼȺⱯɅ₳ѦꙘᴀѧꙙʌ',
+            'b': 'bЬҌҍꙎьъɓხḃḅḇƀƂƃƄƅꝧ',
+            'B': 'BβᏰßẞḂḄḆɃꞖƁ₿ᛔᛒʙᴃ',
+            'c': 'c¢çȼɕʗćĉċčƈꞔḉςϛ¢ͼͻꜿ',
+            'C': 'CꞒȻĆĈĊČƇḈ₵₡₢ϾƆꜾ',
+            'd': 'dᑯᶑɗɖᶁɖᶑđ₫ḋḍḏḑḓꝱȡ',
+            'D': 'DḊḌḎḐḒƉƊᗤᗞᗟᗠᗡᗥᗦᗧᴅ',
+            'e': 'eèéêëēɇҽɘęėęěȅȇẹẻẽếềểễệɘǝɚӛḕḗḙḛḝ',
+            'E': 'EÈÉËĒɆĖĘĚȄȆḔḖẸẺẼẾỀỂỄỆḘḚἘἙἚἛἜἝϵ⍷єεἐἑἒἓἔἕἘᴇⱻ',
+            'f': 'fƒʄɟḟᶂꞙꝼ',
+            'F': 'FҒƑḞ₣ӺꝻϝϜꞘ₣ꟻғӻꜰ',
+            'g': 'gḡĝğġģɠǥǵｇ',
+            'G': 'GḠĜĞĠĢǴǤ₲⅁Ҩɢʛ',
+            'h': 'hĥḥḧḩḫħђɥɦɧҺ',
+            'H': 'HĤḤḦḨḪĦᚺᚻⱧᾘᾙᾚᾛᾜᾝᾞᾟӇਮʜ',
+            'i': 'iìíîïīḭḯỉị¡ɨᎥ',
+            'I': 'IÌÍÏĪḬḮỈỊｴɪ',
+            'j': 'jǰʝĵɉɟȷ',
+            'J': 'JĴɈᴊ',
+            'k': 'kƙķḱḳḵǩꞣᶄꝁꝃꝅ',
+            'K': 'KĶƘḰḲḴǨꞢꝀꝂꝄꞰқᴋ',
+            'l': 'lĺļľŀłḷḹḻḽᶅɭꞎἰἱϊἲἳἴἵἶἷ',
+            'L': 'LĹĻĽĿŁḶḸḺḼʟ',
+            'm': 'mḿṁṃɱᶆꝳꬺ',
+            'M': 'MḾṀṂⱮϻᴍ',
+            'n': 'nñńņňŉṅṇṉꞥꬻȵηŋῂῃῄῆῇпл',
+            'N': 'NÑŃŅŇṆṈŊꞤ₦ИЙийɴ',
+            'o': 'oòóôõöōøǿɵȫȭȯȱὀὁὂὃὄὅṍṏṑṓọỏốồổỗộớờởỡợσΦꬽꬾ',
+            'O': 'OÒÓÔÕÖØǾȪȬṍṏṑṓṌṎṐṒỌỎỐỒỔỖỘỚỜỞỠỢὈὉὊὋὌὍΌῸ',
+            'p': 'pṕṗꝑꝓꝕρϼ',
+            'P': 'PṔṖꝐꝒꝔⱣꝤꝦᴘ',
+            'q': 'qꝗꝙզ',
+            'Q': 'QꝖꝘǪǬǫǭ',
+            'r': 'rŕŗřṙṛṝṟȑȓꞧɍɹɺɻɽг',
+            'R': 'RŔŖŘṘṚṜṞȐȒꞦ℞ƦЯяʁꝚꝛ',
+            's': 'sśŝşšșȿʂᵴᶊṡṣṥṧṩ',
+            'S': 'SŚŜŞŠȘṠṢṤṦṨ§$₷₴ꑄ',
+            't': 'tţťŧƫƭțȶṫṭṯṱẗ',
+            'T': 'TŢŤŦƬƮȚȾṪṬṮṰτт',
+            'u': 'ùúûüũūŭůűųưǔǖǘǚǜȕȗʉṳṵṷṹṻụủứừửữựυϋύὐὑὒὓὔὕὖὗὺύῠῡῢΰῦῧ',
+            'U': 'ÙÚÛÜŨŪŬŮŰŲǓǕǗǙǛṲṴṶṸṺƲỤỦỨỪỬỮỰᴜ',
+            'v': 'ᶌṽṿꝟⱴ',
+            'V': 'ṼṾꝞ',
+            'w': 'wŵẁẃẅẇẉẘⱳꝡ',
+            'W': 'ŴẀẂẄẆẈⱲꝠ',
+            'x': 'ẋẍҳꭖꭗꭘꭙꭓꭔꭕχ',
+            'X': 'ẊẌҲ☓ℵ',
+            'y': 'ýỳÿŷƴȳɏẏẙỳỷỹ',
+            'Y': 'ÝỲŸŶƳȲɎẎỴỶʏ',
+            'z': 'źżẑžƶȥɀʐʑẓẕⱬ',
+            'Z': 'ŹŻẐŽƵȤẒẔⱫ',
+            '/dia': '̴̵̶̷̸̡̢̧̨̛̖̗̘̙̜̝̞̟̠̣̤̥̦̩̪̫̬̭̮̯̰̱̲̳̹̺̻̼͇͈͉͍͎͙͚̀́̂̃̄̅̆̇̈̉̊̋̌̍̎̏̐̑̒̓̔̽̾̿̀́͂̓̈́͆͊͋͌͛̕̚͘͜͟͢͝͞͠͡ͅ',
+            '/tibet': 'ༀ༁༂༃༄༅༆༇༈༉༊།༎༏༐༑༒༓༔༕༖༗༚༛༜༝༞༟༠༡༢༣༤༥༦༧༨༩༪༫༬༭༮༯༰༱༲༳༴༶༸༺༻༼༽ཀཁགགྷངཅཆཇཉཊཋཌཌྷཎཏཐདདྷནཔཕབབྷམཙཚཛཛྷཝཞཟའཡརལཤཥསཧཨཀྵཪཫཬ྅ྈྉྊྋྌ྾྿࿀࿁࿂࿃࿄࿅࿆࿇࿈࿉࿊࿋࿌࿎࿏࿐࿑࿒࿓࿔࿕࿖࿗࿘࿙࿚',
+            '/sircle en': 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ',
+            '/sircle ja': '㋐㋑㋒㋓㋔㋕㋖㋗㋘㋙㋚㋛㋜㋝㋞㋟㋠㋡㋢㋣㋤㋥㋦㋧㋨㋩㋪㋫㋬㋭㋮㋯㋰㋱㋲㋳㋴㋵㋶㋷㋸㋹㋺㋻㋼㋽㋾',
+            '/sircle nu': '⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿⓿❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴⓵⓶⓷⓸⓹⓺⓻⓼⓽⓾',
+            '/grill fish': 'おさかなに失礼でしょ！ꐦ',
+            '/amane': 'こんにちはw天音だよww',
+            '/superscript': 'ᵃᵅᶛᴬᵇᴮᴯᶜᶝᵈᴰᵉᴱᴲᶠᵍᴳʰᶣᴴⁱᶤᴵʲᶨᵏˡᴸᵐᴹⁿᴺᴻᵒᴽᴼᵖᴾʳᴿˢᵗᵀᵘᵁᵛʷᵂˣʸᵞᶻᶼᶽ'
+        };
+
+        function create_button() {
+            const special_letterbutton = document.getElementById('special_letterbutton');
+
+            special_letterbutton.innerHTML = '';
+
+            const input_text = document.getElementById('input_text').value;
+            for (const char in lettervariation) {
+                const variations = lettervariation[char];
+
+                if (input_text === char) {
+                    variations.split('').forEach(variation => {
+                        const button = document.createElement('button');
+                        button.textContent = variation;
+                        button.onclick = function() {
+                            insert_letter(variation);
+                        };
+                        special_letterbutton.appendChild(button);
+                    });
+                    break; 
+                }
+            }
+        }
+
+        function insert_letter(variation) {
+    const outpurt_text = document.getElementById('outpurt_text');
+    outpurt_text.value += variation;
+}
+
+document.getElementById('input_text').addEventListener('input', function() {
+    const input_text = this.value; 
+    const special_letterbutton = document.getElementById('special_letterbutton');
+
+    special_letterbutton.style.display = input_text.length > 0 ? 'block' : 'none';
+
+    special_letterbutton.innerHTML = '';
+
+    for (const char in lettervariation) {
+        const variations = lettervariation[char];
+
+        if (input_text === char) {
+            variations.split('').forEach(variation => {
+                const button = document.createElement('button');
+                button.textContent = variation;
+                button.onclick = function() {
+                    insert_letter(variation);
+                };
+                special_letterbutton.appendChild(button);
+            });
+            break; 
+        }
+    }
+});
+
+create_button();
+
+function copy_clipboard() {
+    const outpurt_text = document.getElementById('outpurt_text');
+    outpurt_text.select();
+    document.execCommand('copy');
+  alert("クリップボードにコピーしました");
+}
+</script>
+</body>
+</html>
