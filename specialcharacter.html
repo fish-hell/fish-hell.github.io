@@ -28,7 +28,20 @@
         body {
             background-color: #EAFFEA;
         }
-  
+    header {
+  height: 30px;
+  width: 100%;
+  background-color: #000011EE;
+  position :fixed;
+  top: 0;
+}
+a{
+    color:white;
+}
+.link{
+    color: #CCCCFF;
+}
+
   
 @keyframes rainbow_animation {
       0% { color: #FF0000; }
@@ -48,11 +61,17 @@
     </style>
 </head>
 <body>
+    <header>
+  <a>おさかな<i>Ξ<b>tools</b></i></a>
+  <a href="https://fish-hell.github.io" class="link">トップ</a>
+  <a>|</a>
+  <a href="https://fish-hell.github.io/specialcharacter.html" class="link">特殊文字作成ツール</a>
+</header>
+    <br>
     <p><font size="5px">特殊文字作成ツール</font></p>
     <p><font size="2.7px">特殊文字作れるで、これを作ったおさかなに感謝しろよ</font></p>
-    <label for="input_text">テキスト入力:</label>
     <input type="text" id="input_text" placeholder="特殊文字化する文字を入力">
-    
+    <br>
     <div id="special_letterbutton"></div>
     <input type="text" id="outpurt_text" placeholder="ここに出力されます">
     <button class="button1" onclick="copy_clipboard()">クリップボードにコピー</button>
