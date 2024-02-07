@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ランダムUnicode生成ツール</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #EEFFFF;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 80%;
+    margin-top: 20px;
+  }
+
+  header {
+  height: 30px;
+  width: 100%;
+  background-color: #000011EE;
+  position :fixed;
+  top: 0;
+}
+a{
+    color:white;
+}
+.link{
+    color: #CCCCFF;
+}
+
+
+
+</style>
+</head>
+<body>
+<header>
+  <a>おさかな<i>Ξ<b>tools</b></i></a>
+  <a href="https://fish-hell.github.io" class="link">トップ</a>
+  <a>|</a>
+  <a href="https://fish-hell.github.io/specialcharacter.html" class="link">特殊文字作成ツール</a>
+</header>
+
+<p><font size="6px">ランダムUnicode生成ツール</font></p>
+<p>その名の通り、ランダムなUnicodeを生成するツールです。<br>こんな文字あるんだみたいな文字が出てきたりします。<br>
+  あなたにぴったりのUnicodeが見つかるかも!<font size="0.3em">知らんけどww</font><br>
+  また、U+1FB00～10FFFFは省略してます。ほぼ表示できないので。</p>
+<br>
+<div class="container" id="container"></div>
+<br>
+<div>
+  <br>
+  <label for="quantity_input">生成個数:</label>
+  <input type="number" id="quantity_input" placeholder="生成個数" value="50">
+  <button onclick="generate_text()">再生成</button>
+</div>
+
+<script>
+  function generate_unicode() {
+    const start = parseInt('0000', 16);
+    const end = parseInt('1FAFF', 16);
+    const randomCodePoint = Math.floor(Math.random() * (end - start + 1)) + start;
+    const random_character = String.fromCodePoint(randomCodePoint);
+    return random_character;
+  }
+
+  function generate_text() {
+    const quantity_input = document.getElementById("quantity_input").value;
+    const container = document.getElementById("container");
+    container.innerHTML = ""; 
+    for (let i = 0; i < quantity_input; i++) {
+      const randomText = generate_unicode();
+      const rotateElement = document.createElement("div");
+      rotateElement.innerText = randomText;
+      const copy_button = document.createElement("button");
+      copy_button.classList.add("copy_button");
+      copy_button.innerText = "コピー";
+      copy_button.onclick = function() {
+        copy_clipboard(randomText);
+      };
+      const container_item = document.createElement("div");
+      container_item.appendChild(rotateElement);
+      container_item.appendChild(copy_button);
+      container.appendChild(container_item);
+    }
+  }
+
+  function copy_clipboard(text) {
+    const temp_input = document.createElement("textarea");
+    temp_input.value = text;
+    document.body.appendChild(temp_input);
+    temp_input.select();
+    document.execCommand("copy");
+    document.body.removeChild(temp_input);
+    alert('"' + text + '"をコピーしました。');
+  }
+  window.onload = function() {
+    generate_text();
+    document.getElementById("quantity_input").value = "50";
+  };
+</script>
+
+</body>
+</html>
