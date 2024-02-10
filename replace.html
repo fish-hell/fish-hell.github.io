@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>置換ツール</title>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #DDFFCC;
+    }
+    header {
+  height: 30px;
+  width: 100%;
+  background-color: #000011EE;
+  position :fixed;
+  top: 0;
+}
+a{
+    color:white;
+}
+.link{
+    color: #CCCCFF;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <a>おさかな<i>Ξ<b>tools</b></i></a>
+        <a href="https://fish-hell.github.io" class="link">トップ</a>
+        <a>|</a>
+        <a href="https://fish-hell.github.io/specialcharacter.html" class="link">特殊文字作成ツール</a>
+        <a>|</a>
+        <a href="https://fish-hell.github.io/randomunicode.html" class="link">ランダムUnicode生成ツール</a>
+      </header>
+    <p><br><font size="5px">文字列置換ツール</font><br><br>
+    文章の中の単語を置換、要するに置き換えるツールです。<font size="0.1px">言うまでもない(笑)</font></p>
+    <input type="text" id="search_input" placeholder="置換する文字">
+    <input type="text" id="replace_input" placeholder="置換後の文字">
+    <button onclick="replace_text()">置換!</button><br>
+    <textarea id="text_input" rows="5" cols="50" placeholder="置換前の文章"></textarea>
+    <textarea id="text_output" rows="5" cols="50" placeholder="置換後の文章" readonly></textarea>
+    <script>
+        function replace_text(){
+            const text_input = document.getElementById('text_input');
+            const search_input = document.getElementById('search_input').value;
+            const replace_input = document.getElementById('replace_input').value;
+            const output_textarea = document.getElementById('text_output');
+
+            const new_text = text_input.value.split(search_input).join(replace_input);
+            output_textarea.value = new_text;
+        }
+    </script>
+</body>
+</html>
