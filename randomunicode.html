@@ -80,14 +80,14 @@ a{
     const container = document.getElementById("container");
     container.innerHTML = ""; 
     for (let i = 0; i < quantity_input; i++) {
-      const randomText = generate_unicode();
+      const random_text = generate_unicode();
       const rotateElement = document.createElement("div");
-      rotateElement.innerText = randomText;
+      rotateElement.innerText = random_text;
       const copy_button = document.createElement("button");
       copy_button.classList.add("copy_button");
       copy_button.innerText = "コピー";
       copy_button.onclick = function() {
-        copy_clipboard(randomText);
+        copy_clipboard(random_text);
       };
       const container_item = document.createElement("div");
       container_item.appendChild(rotateElement);
