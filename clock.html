@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時計</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: ハーフフォント, sans-serif;
+            background-color: black;
+            overflow: hidden; /* 横画面時にスクロールバーを表示しないようにする */
+        }
+
+        #currentDateTime {
+            text-align: center;
+            font-size: 50px;
+            color: white;
+        }
+
+        #infoButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #00000000;
+            color: #cccccc;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #infoAlart {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+            background-color: #FFFFFFEE;
+        }
+
+        #infoAlartContent {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+       .link {
+         color: #000077;
+       }
+    </style>
+</head>
+<body ondblclick="fullscreen()">
+
+<p id="currentDateTime"></p>
+
+<button id="infoButton" onclick="showAlert()">︙</button>
+
+<!-- 独自のアラート要素 -->
+<div id="infoAlart">
+    <div id="infoAlartContent">
+        <a>おさかな<i>Ξ<b>tools</b></i><a><a class="link" href="https://fish-hell.github.io">トップ</a><br>
+        <p><font size="5px">時計</font></p>
+        <label for="fontColorPicker">フォント色:</label>
+        <input type="color" id="fontColorPicker" value="#ffffff">
+        <br>
+        <label for="bgColorPicker">背景色:</label>
+        <input type="color" id="bgColorPicker" value="#000000">
+        <br>
+    </div>
+    <button onclick="hideAlert()">閉じる</button>
+</div>
+<script>
+    let isFullscreen = false;
+    createButton();
+
+    function updateDateTime() {
+        var now = new Date();
+        var y = now.getFullYear();
+        var m = (now.getMonth() + 1).toString().padStart(2, '0');
+        var d = now.getDate().toString().padStart(2, '0');
+        var h = now.getHours().toString().padStart(2, '0');
+        var m = now.getMinutes().toString().padStart(2, '0');
+        var s = now.getSeconds().toString().padStart(2, '0');
+        var dateTimeString = `${y}年${m}月${d}日<br>${h}:${m}:${s}`;
+        const currentDateTimeElement = document.getElementById('currentDateTime');
+        currentDateTimeElement.innerHTML = dateTimeString;
+        updateColor(currentDateTimeElement);
+    }
+      
+    setInterval(updateDateTime, 50);
+
+    updateDateTime();
+
+    function fullscreen() {
+        isFullscreen = !isFullscreen;
+
+        if (isFullscreen) {
+            const elem = document.documentElement;
+            requestFullscreen(elem);
+        } else {
+            exitFullscreen();
+        }
+    }
+
+    function requestFullscreen(elem) {
+        const method = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+        if (method) {
+            method.call(elem);
+            document.getElementById('infoButton').style.display = 'none'; // 全画面表示時にボタンを非表示
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.getElementById('infoButton').style.display = 'block'; // 全画面解除時にボタンを表示
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+            document.getElementById('infoButton').style.display = 'block'; // 全画面解除時にボタンを表示
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+            document.getElementById('infoButton').style.display = 'block'; // 全画面解除時にボタンを表示
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+            document.getElementById('infoButton').style.display = 'block'; // 全画面解除時にボタンを表示
+        }
+    }
+
+    function showAlert() {
+        const infoAlart = document.getElementById('infoAlart');
+        const infoAlartContent = document.getElementById('infoAlartContent');
+        infoAlartContent.innerHTML = `
+            <a>おさかな<i>Ξ<b>tools</b></i><a><a class="link" href="https://fish-hell.github.io">トップ</a><br>
+            <p><font size="5px">時計</font><br>
+              画面を2回タップ(クリック)すると全画面表示になります。もう1回すれば戻ります。また、下ので色がカスタマイズできます。
+            </p>
+            
+            <label for="fontColorPicker">文字色:</label>
+            <input type="color" id="fontColorPicker" value="#ffffff">
+            <br>
+            <label for="bgColorPicker">背景色:</label>
+            <input type="color" id="bgColorPicker" value="#000000">
+            <br>
+        `;
+
+        infoAlart.style.display = 'block';
+        createButton();
+    }
+
+    function hideAlert() {
+        const infoAlart = document.getElementById('infoAlart');
+        infoAlart.style.display = 'none';
+    }
+
+    function updateColor(element) {
+        const fontColorPicker = document.getElementById('fontColorPicker');
+        const bgColorPicker = document.getElementById('bgColorPicker');
+
+        if (fontColorPicker && bgColorPicker) {
+            element.style.color = fontColorPicker.value;
+            document.body.style.backgroundColor = bgColorPicker.value;
+        }
+    }
+
+    function createButton() {
+        const infoButton = document.getElementById('infoButton');
+        infoButton.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
