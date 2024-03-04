@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>時計</title>
+    <title>Time</title>
 
     <style>
         html, body {
@@ -12,9 +12,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: ハーフフォント, sans-serif;
             background-color: black;
-            overflow: hidden; /* 横画面時にスクロールバーを表示しないようにする */
+            overflow: hidden;
+            user-select: none;
         }
 
         #currentDateTime {
@@ -65,7 +65,6 @@
 
 <button id="infoButton" onclick="showAlert()">︙</button>
 
-<!-- 独自のアラート要素 -->
 <div id="infoAlart">
     <div id="infoAlartContent">
         <a>おさかな<i>Ξ<b>tools</b></i><a><a class="link" href="https://fish-hell.github.io">トップ</a><br>
@@ -89,9 +88,9 @@
         var m = (now.getMonth() + 1).toString().padStart(2, '0');
         var d = now.getDate().toString().padStart(2, '0');
         var h = now.getHours().toString().padStart(2, '0');
-        var m = now.getMinutes().toString().padStart(2, '0');
+        var mi = now.getMinutes().toString().padStart(2, '0');
         var s = now.getSeconds().toString().padStart(2, '0');
-        var dateTimeString = `${y}年${m}月${d}日<br>${h}:${m}:${s}`;
+        var dateTimeString = `${y}年${m}月${d}日<br>${h}:${mi}:${s}`;
         const currentDateTimeElement = document.getElementById('currentDateTime');
         currentDateTimeElement.innerHTML = dateTimeString;
         updateColor(currentDateTimeElement);
