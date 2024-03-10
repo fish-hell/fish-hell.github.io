@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お絵かき</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      display: block;
+      touch-action: none;
+    }
+
+    #colorPickerContainer {
+      display: block;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="380" height="350"></canvas>
+  <br>
+  <select id="penSelect" onchange="togglePenType()">
+    <option value="normal">通常ペン</option>
+    <option value="eraser">消しゴム</option>
+    <option value="rainbow">虹色ペン</option>
+    <option value="random">ランダムペン</option>
+  </select>
+
+  <div id="colorPickerContainer">
+    <label for="colorPicker">ペンの色: </label>
+    <input type="color" id="colorPicker" value="#000000">
+  </div>
+
+  <nobr><label for="penSizeSlider">太さ: </label>
+  <input type="range" id="penSizeSlider" min="1" max="40" step="1" value="3"></nobr>
+  <button onclick="clearCanvas()">キャンバスをクリア</button>
+  <button onclick="saveCanvas()">画像を保存</button>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    const penSelect = document.getElementById('penSelect');
+    const colorPickerContainer = document.getElementById('colorPickerContainer');
+    const colorPicker = document.getElementById('colorPicker');
+    const penSizeSlider = document.getElementById('penSizeSlider');
+    let isDrawing = false;
+    let penType = 'normal';
+    let penColor = colorPicker.value;
+    let penSize = penSizeSlider.value;
+    let penOpacity = 1;
+    let lastX = 0;
+    let lastY = 0;
+    let hue = 0;
+
+    function draw(e) {
+      if (!isDrawing) return;
+
+      ctx.lineWidth = penSize;
+      ctx.lineCap = 'round';
+      // 消しゴム処理
+      if (penType === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(255,255,255,1)';
+      } else if (penType === 'rainbow') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = `hsl(${hue},100%,50%,${penOpacity})`;
+
+        // 虹色処理
+        const { clientX, clientY } = e.touches[0];
+        const distance = Math.sqrt((clientX - lastX) ** 2 + (clientY - lastY) ** 2);
+        hue = (hue + distance * 0.1) % 360;
+      } else if (penType === 'random') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = `hsla(${Math.random() * 360},100%,50%,${penOpacity})`;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = penColor;
+      }
+
+      const { clientX, clientY } = e.touches[0];
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(clientX, clientY);
+      ctx.stroke();
+
+      lastX = clientX;
+      lastY = clientY;
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const { clientX, clientY } = e.touches[0];
+      lastX = clientX;
+      lastY = clientY;
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function togglePenType() {
+      penType = penSelect.value;
+      if (penType === 'normal') {
+        colorPickerContainer.style.display = 'block';
+        penColor = colorPicker.value;
+      } else {
+        colorPickerContainer.style.display = 'none';
+      }
+    }
+
+    function clearCanvas() {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCanvas() {
+      const image = canvas.toDataURL();
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = 'osakanatools-drawing.png';
+      link.click();
+    }
+
+    colorPicker.addEventListener('input', function() {
+      penColor = this.value;
+      if (penType === 'normal') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = penColor;
+      }
+    });
+
+    penSizeSlider.addEventListener('input', function() {
+      penSize = this.value;
+    });
+
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+  </script>
+</body>
+</html>
