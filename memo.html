@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Memo</title>
+</head>
+<body>
+    <h1>メモ帳</h1>
+
+    <textarea id="memo" rows="10" cols="30"></textarea>
+    <br>
+    <button onclick="saveMemo()">保存</button>
+    <button onclick="loadMemo()">読み込み</button>
+
+    <script>
+        function saveMemo() {
+            const memoContent = document.getElementById('memo').value;
+            document.cookie = "memo=" + encodeURIComponent(memoContent);
+            alert("メモが保存されました");
+        }
+
+        function loadMemo() {
+            const memoCookie = document.cookie
+                .split(';')
+                .find(cookie => cookie.trim().startsWith('memo='));
+
+            if (memoCookie) {
+                const memoContent = decodeURIComponent(memoCookie.split('=')[1]);
+                document.getElementById('memo').value = memoContent;
+                alert("メモが読み込まれました");
+            } else {
+                alert("保存されたメモがありません。");
+            }
+        }
+    </script>
+</body>
+</html>
