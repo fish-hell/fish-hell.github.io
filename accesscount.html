@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>総アクセス回数</title>
+</head>
+<body>
+    <h1>
+        <?php
+        $accessCountFile = 'count.txt';
+
+        if (!file_exists($accessCountFile)) {
+            file_put_contents($accessCountFile, '0');
+        }
+
+        $accessCount = intval(file_get_contents($accessCountFile));
+        $accessCount++;
+        file_put_contents($accessCountFile, $accessCount);
+
+        echo '総アクセス回数: ' . $accessCount;
+        ?>
+    </h1>
+</body>
+</html>
