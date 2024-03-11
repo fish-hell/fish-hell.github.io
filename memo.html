@@ -1,38 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Memo</title>
+    <title>メモ帳</title>
 </head>
 <body>
-    <h1>メモ帳</h1>
+    <p><font size="5px">メモ帳</font><br>
+      特に変わったところもないメモ帳です。
+      <br>ブラウザのメモはローカルストレージに保存されるので、ブラウザを閉じても読み込むことができます。
+      <br><small>※メモ内容の損失について作成者は一切の責任を負いません。</small>
+    </p>
 
-    <textarea id="memo" rows="10" cols="30"></textarea>
+    <textarea id="memo" rows="20" style="width: 100%" oninput="updateCharacterCount()"></textarea>
     <br>
     <button onclick="saveMemo()">保存</button>
     <button onclick="loadMemo()">読み込み</button>
+    <div id="charCount">文字数: 0文字</div>
 
     <script>
         function saveMemo() {
             const memoContent = document.getElementById('memo').value;
-            document.cookie = "memo=" + encodeURIComponent(memoContent);
-            alert("メモが保存されました");
+            const confirmation = confirm('メモを保存しますか？\n現在保存されている内容は上書きされます。');
+
+            if (confirmation) {
+                localStorage.setItem('memo', memoContent);
+                alert('メモを保存しました！');
+            }
         }
 
         function loadMemo() {
-            const memoCookie = document.cookie
-                .split(';')
-                .find(cookie => cookie.trim().startsWith('memo='));
+            const memoContent = localStorage.getItem('memo');
 
-            if (memoCookie) {
-                const memoContent = decodeURIComponent(memoCookie.split('=')[1]);
-                document.getElementById('memo').value = memoContent;
-                alert("メモが読み込まれました");
+            if (memoContent) {
+                const confirmation = confirm('保存されたメモが見つかりました。\nメモを読み込みますか？\n現在書かれている内容は上書きされます。');
+
+                if (confirmation) {
+                    document.getElementById('memo').value = memoContent;
+                    alert('メモが読み込まれました！');
+                }
             } else {
-                alert("保存されたメモがありません。");
+                alert('保存されたメモがありません。');
             }
+        }
+
+        function updateCharacterCount() {
+            const memoContent = document.getElementById('memo').value;
+            const charCount = memoContent.length;
+            document.getElementById('charCount').textContent = `文字数: ${charCount}文字`;
         }
     </script>
 </body>
