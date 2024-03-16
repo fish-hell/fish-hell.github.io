@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="menu.css">
+  <title>html実行</title>
+  <style>
+    body {
+      background-color: #eeffbb;
+    }
+    textarea {
+      width: 380px;
+      height: 250px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-container" onclick="openMenu()">
+    <button class="menu-btn">
+      <div class="menu-icon"></div>
+      <div class="menu-icon"></div>
+      <div class="menu-icon"></div>
+    </button>
+    <div class="menu-content">
+      <a href="https://fish-hell.github.io" class="menu-item">トップ</a>
+      <a href="https://fish-hell.github.io/specialcharacter" class="menu-item">特殊文字作成ツール</a>
+      <a href="https://fish-hell.github.io/randomunicode" class="menu-item">ランダムUnicode生成ツール</a>
+      <a href="https://fish-hell.github.io/replace" class="menu-item">置換ツール</a>
+    </div>
+  </div>
+  <p><font size="5px">html実行</font><br>
+    <small>✅入力された内容の実行や保存はブラウザ内で処理され、サーバーには送信されません。</small>
+  </p>
+  <textarea id="htmlInput" placeholder="htmlコードを入力">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;style&gt;
+body {
+  background-color: azure;
+}
+h2 {
+  padding: 0.4em 0.5em;
+  color: #555555;
+  background: #f0f5f5;
+  border-left: solid 5px #55ccaa;
+  border-bottom: solid 3px #d7d7d7;
+}
+
+.box{
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    color: #334455;
+    background: white;
+    border-top: solid 5px #556677;
+    box-shadow: 0 3px 5px #00000044;
+}
+.box p {
+    margin: 0; 
+    padding: 0;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;このツール便利でしょ？&lt;/h2&gt;
+&lt;div class="box"&gt;
+&lt;p&gt;このツールがあればエディターを開かずに済みますね！&lt;br&gt;
+何か実行したい場合は、googleかなんかで「(実行したいもの) html サンプルコード」とかで調べたら出てくると思います。&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;概要&lt;/h2&gt;
+&lt;div class="box"&gt;
+&lt;p&gt;このページでは、htmlの<code>&amp;lt;iframe&amp;gt;</code>要素を使って、
+html内でhtmlを実行できます。また、cssやjavascriptもコード内に書けば実行できます。&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2&gt;保存と読み込み&lt;/h2&gt;
+&lt;div class="box"&gt;
+&lt;p&gt;書いたhtmlの内容を1つだけ保存できます。安心してください。サーバーではなくローカルストレージに保存されます。
+また、保存容量は約5MBまでくらいなので、500万文字くらい書いたら保存できないかもしれません。そんなことないかもしれんが&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;html&gt;
+</textarea>
+  <button onclick="runHtml()">実行</button>
+  <button onclick="saveHtml()">保存</button>
+  <button onclick="loadHtml()">読み込み</button>
+  <div id="previewContainer"></div>
+
+  <script>
+    function runHtml() {
+      const htmlInput = document.getElementById('htmlInput').value;
+      const previewContainer = document.getElementById('previewContainer');
+
+      previewContainer.innerHTML = '';
+
+      const iframe = document.createElement('iframe');
+      iframe.width = '100%';
+      iframe.height = '500px';
+
+      iframe.srcdoc = htmlInput;
+
+      previewContainer.appendChild(iframe);
+    }
+
+  
+  function saveHtml() {
+  const htmlInput = document.getElementById('htmlInput').value;
+  const confirmation = confirm('htmlコードを保存しますか？\n現在保存されている内容は上書きされます。');
+  if (confirmation) {
+    localStorage.setItem('savedHtmlCode', htmlInput);
+    alert('htmlコードが保存されました！');
+  }
+}
+
+function loadHtml() {
+  const savedHtmlCode = localStorage.getItem('savedHtmlCode');
+  if (savedHtmlCode) {
+    const confirmation = confirm('保存されたhtmlコードが見つかりました。\nhtmlコードを読み込みますか？\n現在書かれている内容は上書きされます。');
+    if (confirmation) {
+      document.getElementById('htmlInput').value = savedHtmlCode;
+      alert('htmlコードが読み込まれました！');
+    }
+  } else {
+    alert('保存されたhtmlコードがありません。');
+  }
+}
+    function openMenu() {
+      const menuContainer = document.querySelector('.menu-container');
+      menuContainer.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
