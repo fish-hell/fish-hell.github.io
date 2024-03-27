@@ -17,7 +17,6 @@
 
   .container {
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -25,22 +24,34 @@
     margin-top: 20px;
   }
 
+  .container-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px;
+  }
+
   header {
-  height: 30px;
-  width: 100%;
-  background-color: #000011EE;
-  position: fixed;
-  top: 0;
-}
-a{
-    color:white;
-}
-.link{
+    height: 30px;
+    width: 100%;
+    background-color: #000011EE;
+    position: fixed;
+    top: 0;
+  }
+
+  a {
+    color: white;
+  }
+
+  .link {
     color: #CCCCFF;
+  }
+  
+
+  
+  p {
+  margin-top: calc(100% - 200px)
 }
-
-
-
 </style>
 </head>
 <body>
@@ -48,9 +59,8 @@ a{
   <a>おさかな<i>Ξ<b>tools</b></i></a>
   <a href="https://fish-hell.github.io" class="link">トップ</a>
 </header>
-
-<p><font size="6px">ランダムUnicode生成ツール</font></p>
-<p>その名の通り、ランダムなUnicodeを生成するツールです。<br>
+<p><font size="6px">ランダムUnicode生成ツール</font>
+  <br>その名の通り、ランダムなUnicodeを生成するツールです。<br>
   あなたにぴったりのUnicodeが見つかるかも!<font size="0.3em">知らんけどww</font><br>
   また、U+1FB00～10FFFFは省略してます。ほぼ表示できないので。</p>
 <br>
@@ -78,15 +88,15 @@ a{
     container.innerHTML = ""; 
     for (let i = 0; i < quantity_input; i++) {
       const random_text = generate_unicode();
+      const container_item = document.createElement("div");
+      container_item.classList.add("container-item");
       const rotateElement = document.createElement("div");
       rotateElement.innerText = random_text;
       const copy_button = document.createElement("button");
-      copy_button.classList.add("copy_button");
       copy_button.innerText = "コピー";
       copy_button.onclick = function() {
         copy_clipboard(random_text);
       };
-      const container_item = document.createElement("div");
       container_item.appendChild(rotateElement);
       container_item.appendChild(copy_button);
       container.appendChild(container_item);
