@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>充電残量を当てます</title>
+ <link rel="stylesheet" href="menu.css">
+ <style>
+     body {
+         background-color: #ddddff;
+         display:block;
+     }
+     button{
+         padding: 5px;
+         background-color: #eee;
+         border-width: 2px;
+         border-style: groove;
+         border-color: #55aaaa;
+         border-radius: 5px;
+     }
+ </style>
+</head>
+<body>
+      <div class="menu-container" onclick="openMenu()">
+    <button class="menu-btn">
+      <div class="menu-icon"></div>
+      <div class="menu-icon"></div>
+      <div class="menu-icon"></div>
+    </button>
+    <div class="menu-content">
+        <a href="https://fish-hell.github.io" class="menu-item">トップ</a>
+      <a href="https://fish-hell.github.io/specialcharacter" class="menu-item">特殊文字作成ツール</a>
+      <a href="https://fish-hell.github.io/randomunicode" class="menu-item">ランダムUnicode生成ツール</a>
+      <a href="https://fish-hell.github.io/replace" class="menu-item">置換ツール</a>
+      <a href="https://fish-hell.github.io/run" class="menu-item">html実行</a>
+    </div>
+  </div>
+  <div style="text-align: center">
+    <p><font size="5px">充電残量を当てます</font>
+    <br><br>デバイスの充電残量をズバリ当てて見せます</p>
+    <button onclick="checkBattery()">当てる</button>
+    </div>
+<script> 
+function checkBattery() {
+    var audio = new Audio('https://fish-hell.github.io/ジャン！.mp3');
+    audio.play().then(() => {
+        navigator.getBattery().then(function(battery) {
+            var batteryLevel = battery.level * 100;
+            var formattedBatteryLevel = batteryLevel.toFixed(2);
+            formattedBatteryLevel = formattedBatteryLevel.replace(/\.00$/, "");
+            alert('バッテリー残量は…' + formattedBatteryLevel + '%だ！！！');
+        });
+    });
+}
+    function openMenu() {
+      const menuContainer = document.querySelector('.menu-container');
+      menuContainer.classList.toggle('active');
+    }
+</script>
+</body>
+</html>
