@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>現在地取得ツール</title>
+</head>
+<body>
+<p><font size="5px">現在地取得ツール</font></p>
+<p>現在地を取得するツールです。それ以上でもそれ以下でもない。<br>
+※このサイトでは、ipinfo apiを使用しています。</p>
+
+<button onclick="getaddees()">再取得</button>
+
+<p id="address" style="font-size: 18px"></p>
+
+<script>
+getaddees()
+
+ function getaddees() {
+  fetch('https://ipinfo.io/json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('address').innerHTML = '都道府県:' + data.region + '、市区町村:' + data.city;
+    })}
+</script>
+
+</body>
+</html>
