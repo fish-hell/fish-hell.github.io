@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tap Counter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #EEFFEE;
+    }
+    #counter {
+        font-size: 3em;
+        margin-bottom: 20px;
+    }
+    button {
+        padding: 15px 25px;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+  <p><font size="5px">ひたすらタップ</font></></h1>
+<div id="counter">0</div>
+<button id="tapButton">押す😃</button>
+
+<script>
+    let count = localStorage.getItem('tapCount') || 0;
+    document.getElementById('counter').innerText = count;
+    function updateCounter() {
+        count++;
+        localStorage.setItem('tapCount', count);
+        document.getElementById('counter').innerText = count;
+    }
+    document.getElementById('tapButton').addEventListener('click', updateCounter);
+</script>
+</body>
+</html>
