@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>site cat</title>
+</head>
+<body>  
+    <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="URLを入力">
+        <button type="submit">go</button>
+    </form>
+    
+    <iframe id="catiframe" width="100%" height="600px" frameborder="0"></iframe>
+    
+    <script>
+        const urlForm = document.getElementById('urlForm');
+        const urlInput = document.getElementById('urlInput');
+        const catiframe = document.getElementById('catiframe');
+
+        urlForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let url = urlInput.value.trim();
+            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('file:///')) {
+                url = 'https://' + url;
+            }
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    var modifiedData = data.replace(/あ/g, 'にゃ').replace(/か/g, 'にゃ').replace(/が/g, 'にゃ').replace(/さ/g, 'にゃ').replace(/ざ/g, 'にゃ').replace(/た/g, 'にゃ').replace(/だ/g, 'にゃ').replace(/な/g, 'にゃ').replace(/は/g, 'にゃ').replace(/ば/g, 'にゃ').replace(/ぱ/g, 'にゃ').replace(/ま/g, 'にゃ').replace(/や/g, 'にゃ').replace(/ら/g, 'にゃ').replace(/わ/g, 'にゃ').replace(/きゃ/g, 'にゃ').replace(/ぎゃ/g, 'にゃ').replace(/しゃ/g, 'にゃ').replace(/じゃ/g, 'にゃ').replace(/ちゃ/g, 'にゃ').replace(/ぢゃ/g, 'にゃ').replace(/ひゃ/g, 'にゃ').replace(/びゃ/g, 'にゃ').replace(/ぴゃ/g, 'にゃ').replace(/みゃ/g, 'にゃ').replace(/りゃ/g, 'にゃ').replace(/ア/g, 'ニャ').replace(/カ/g, 'ニャ').replace(/ガ/g, 'ニャ').replace(/サ/g, 'ニャ').replace(/ザ/g, 'ニャ').replace(/タ/g, 'ニャ').replace(/ダ/g, 'ニャ').replace(/ナ/g, 'ニャ').replace(/ハ/g, 'ニャ').replace(/バ/g, 'ニャ').replace(/パ/g, 'ニャ').replace(/マ/g, 'ニャ').replace(/ヤ/g, 'ニャ').replace(/ラ/g, 'ニャ').replace(/ワ/g, 'ニャ').replace(/キャ/g, 'ニャ').replace(/ギャ/g, 'ニャ').replace(/シャ/g, 'ニャ').replace(/ジャ/g, 'ニャ').replace(/チャ/g, 'ニャ').replace(/ヂャ/g, 'ニャ').replace(/ヒャ/g, 'ニャ').replace(/ビャ/g, 'ニャ').replace(/ファ/g, 'ニャ').replace(/ピャ/g, 'ニャ').replace(/ミャ/g, 'ニャ').replace(/リャ/g, 'ニャ');
+                    catiframe.srcdoc = modifiedData;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+</body>
+</html>
