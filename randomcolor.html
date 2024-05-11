@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>ランダム色生成ツール</title>
+    <style>
+        body {
+            height: 2000px;
+        }
+        #colorInfo {
+            font-size: 1.2em;
+            color: #000000;
+            text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white;
+        }
+    </style>
+</head>
+<body onclick="setbg()">
+    <div id="colorInfo"></div>
+    <script>
+        function setbg() {
+            const bgcolor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0').toUpperCase();
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', bgcolor);
+            document.body.style.backgroundColor = bgcolor;
+            const info = document.getElementById('colorInfo');
+            info.textContent = `HEX: ${bgcolor}`;
+        }
+
+        setbg();
+    </script>
+</body>
+</html>
