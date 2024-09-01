@@ -15,6 +15,15 @@
       box-sizing: border-box;
       margin-bottom: 10px;
     }
+    .controls {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .bg-color-picker {
+      margin-left: 10px;
+      display: none; /* デフォルトでは隠す */
+    }
   </style>
 </head>
 <body>
@@ -34,60 +43,16 @@
   <p><font size="5px">html実行</font><br>
     <small>✅入力された内容の実行や保存はブラウザ内で処理され、サーバーには送信されません。</small>
   </p>
-  <textarea id="htmlInput" placeholder="htmlコードを入力">
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta charset="UTF-8"&gt;
-&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-&lt;style&gt;
-body {
-  background-color: azure;
-}
-h2 {
-  padding: 0.4em 0.5em;
-  color: #555555;
-  background: #f0f5f5;
-  border-left: solid 5px #55ccaa;
-  border-bottom: solid 3px #d7d7d7;
-}
+  
+  <div class="controls">
+    <button onclick="runHtml()">実行</button>
+    <button onclick="saveHtml()">保存</button>
+    <button onclick="loadHtml()">読み込み</button>
+    <input type="color" id="bgcolorPicker" class="bg-color-picker" onchange="changeBgColor(this.value)">
+  </div>
 
-.box{
-    padding: 0.5em 1em;
-    margin: 2em 0;
-    color: #334455;
-    background: white;
-    border-top: solid 5px #556677;
-    box-shadow: 0 3px 5px #00000044;
-}
-.box p {
-    margin: 0; 
-    padding: 0;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;h2&gt;このツール便利でしょ？&lt;/h2&gt;
-&lt;div class="box"&gt;
-&lt;p&gt;このツールがあればエディターを開かずに済みますね！&lt;br&gt;
-何か実行したい場合は、googleかなんかで「(実行したいもの) html サンプルコード」とかで調べたら出てくると思います。&lt;/p&gt;
-&lt;/div&gt;
-&lt;h2&gt;概要&lt;/h2&gt;
-&lt;div class="box"&gt;
-&lt;p&gt;このページでは、htmlの<code>&amp;lt;iframe&amp;gt;</code>要素を使って、
-html内でhtmlを実行できます。また、cssやjavascriptもコード内に書けば実行できます。&lt;/p&gt;
-&lt;/div&gt;
-&lt;h2&gt;保存と読み込み&lt;/h2&gt;
-&lt;div class="box"&gt;
-&lt;p&gt;書いたhtmlの内容を1つだけ保存できます。安心してください。サーバーではなくローカルストレージに保存されます。
-また、保存容量は約5MBまでくらいなので、500万文字くらい書いたら保存できないかもしれません。そんなことないかもしれんが&lt;/p&gt;
-&lt;/div&gt;
-&lt;/body&gt;
-&lt;html&gt;
-</textarea>
-  <button onclick="runHtml()">実行</button>
-  <button onclick="saveHtml()">保存</button>
-  <button onclick="loadHtml()">読み込み</button>
+  <textarea id="htmlInput" placeholder="htmlコードを入力"></textarea>
+  
   <div id="previewContainer"></div>
 
   <script>
@@ -106,32 +71,58 @@ html内でhtmlを実行できます。また、cssやjavascriptもコード内�
       previewContainer.appendChild(iframe);
     }
 
-  
-  function saveHtml() {
-  const htmlInput = document.getElementById('htmlInput').value;
-  const confirmation = confirm('htmlコードを保存しますか？\n現在保存されている内容は上書きされます。');
-  if (confirmation) {
-    localStorage.setItem('savedHtmlCode', htmlInput);
-    alert('htmlコードが保存されました！');
-  }
-}
-
-function loadHtml() {
-  const savedHtmlCode = localStorage.getItem('savedHtmlCode');
-  if (savedHtmlCode) {
-    const confirmation = confirm('保存されたhtmlコードが見つかりました。\nhtmlコードを読み込みますか？\n現在書かれている内容は上書きされます。');
-    if (confirmation) {
-      document.getElementById('htmlInput').value = savedHtmlCode;
-      alert('htmlコードが読み込まれました！');
+    function saveHtml() {
+      const htmlInput = document.getElementById('htmlInput').value;
+      const confirmation = confirm('htmlコードを保存しますか？\n現在保存されている内容は上書きされます。');
+      if (confirmation) {
+        localStorage.setItem('savedHtmlCode', htmlInput);
+        alert('htmlコードが保存されました！');
+      }
     }
-  } else {
-    alert('保存されたhtmlコードがありません。');
-  }
-}
+
+    function loadHtml() {
+      const savedHtmlCode = localStorage.getItem('savedHtmlCode');
+      if (savedHtmlCode) {
+        const confirmation = confirm('保存されたhtmlコードが見つかりました。\nhtmlコードを読み込みますか？\n現在書かれている内容は上書きされます。');
+        if (confirmation) {
+          document.getElementById('htmlInput').value = savedHtmlCode;
+          alert('htmlコードが読み込まれました！');
+        }
+      } else {
+        alert('保存されたhtmlコードがありません。');
+      }
+    }
+
     function openMenu() {
       const menuContainer = document.querySelector('.menu-container');
       menuContainer.classList.toggle('active');
     }
+
+    function changeBgColor(color) {
+      document.body.style.backgroundColor = color;
+    }
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    window.onload = function() {
+      const codeParam = getQueryParam('code');
+      const bgColorParam = getQueryParam('bgcolor');
+
+      if (codeParam) {
+        document.getElementById('htmlInput').value = decodeURIComponent(codeParam);
+        runHtml();
+      }
+
+      if (bgColorParam) {
+        const colorPicker = document.getElementById('bgcolorPicker');
+        colorPicker.value = decodeURIComponent(bgColorParam);
+        colorPicker.style.display = 'inline-block';
+        changeBgColor(decodeURIComponent(bgColorParam));
+      }
+    };
   </script>
 </body>
 </html>
