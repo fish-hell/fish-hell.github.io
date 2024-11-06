@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="menu.css">
   <title>html実行</title>
   <style>
     body {
@@ -11,44 +10,56 @@
     }
     textarea {
       width: 380px;
-      height: 250px;
+      height: 200px;
       box-sizing: border-box;
       margin-bottom: 10px;
     }
-    .controls {
+    .controls, .save-controls {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 5px;
+      margin-bottom: 5px;
     }
-    .bg-color-picker {
+    .iframe-size-controls input {
+      width: 60px;
+      margin-right: 5px;
+    }
+    .template-selector {
       margin-left: 10px;
-      display: none; /* デフォルトでは隠す */
     }
   </style>
 </head>
 <body>
-  <div class="menu-container" onclick="openMenu()">
-    <button class="menu-btn">
-      <div class="menu-icon"></div>
-      <div class="menu-icon"></div>
-      <div class="menu-icon"></div>
-    </button>
-    <div class="menu-content">
-      <a href="https://fish-hell.github.io" class="menu-item">トップ</a>
-      <a href="https://fish-hell.github.io/specialcharacter" class="menu-item">特殊文字作成ツール</a>
-      <a href="https://fish-hell.github.io/randomunicode" class="menu-item">ランダムUnicode生成ツール</a>
-      <a href="https://fish-hell.github.io/replace" class="menu-item">置換ツール</a>
-    </div>
-  </div>
   <p><font size="5px">html実行</font><br>
-    <small>✅入力された内容の実行や保存はブラウザ内で処理され、サーバーには送信されません。</small>
+    <small>✅入力された内容はサーバーには送信されません。</small>
   </p>
-  
   <div class="controls">
     <button onclick="runHtml()">実行</button>
+    <div class="save-controls">
+      <select id="slotSelector"></select>
+      から
+    </div>
     <button onclick="saveHtml()">保存</button>
     <button onclick="loadHtml()">読み込み</button>
-    <input type="color" id="bgcolorPicker" class="bg-color-picker" onchange="changeBgColor(this.value)">
+  </div>
+  <div class="file-controls">
+    <button onclick="downloadHtml()">.htmlで保存</button>
+    <button onclick="downloadTxt()">.txtで保存</button>
+    <input type="file" id="fileInput" style="display:none" onchange="loadFromFile(event)">
+    <button onclick="document.getElementById('fileInput').click()">ファイルから読み込む</button>
+  </div>
+
+  <div class="iframe-size-controls">
+    サイズ:&#x0020;<input type="text" id="iframeWidth" value="100%" oninput="applyIframeSize()">×
+    <input type="text" id="iframeHeight" value="400px" oninput="applyIframeSize()">
+    
+    <!-- テンプレート選択 -->    
+    <select id="templateSelector" class="template-selector" onchange="insertTemplate()">
+      <option value="">サンプルを選択</option>
+      <option value="<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\dUTF-8\d>\n<meta name=\dviewport\d content=\dwidth=device-width, initial-scale=1.0\d>\n<style>\nbody {\n  background-color: azure;\n}\nh2 {\n  padding: 0.4em 0.5em;\n  color: #555555;\n  background: #f0f5f5;\n  border-left: solid 5px #55ccaa;\n  border-bottom: solid 3px #d7d7d7;\n}\n.box{\n    padding: 0.5em 1em;\n    margin: 2em 0;\n    color: #334455;\n    background: white;\n    border-top: solid 5px #556677;\n    box-shadow: 0 3px 5px #00000044;\n}\n.box p {\n    margin: 0; \n    padding: 0;\n}\n</style>\n</head>\n<body>\n<h2>html実行便利でしょ？</h2>\n<div class=\dbox\d>\n<p>このツールがあればエディターを開かずに済みますね！メモ帳としても利用できます()<br>\n何か実行したい場合は、Googleかなんかで「(実行したいもの) html サンプルコード」とかで調べたら出てくると思います。</p>\n</div>\n<h2>概要</h2>\n<div class=\dbox\d>\n<p>このページでは、htmlの<code>iframe</code>要素を使って、\nhtml内でhtmlを実行できます。また、cssやjavascriptもコード内に書けば実行できます。</p>\n</div>\n<h2>保存と読み込み</h2>\n<div class=\dbox\d>\n<p>書いた内容を10個まで保存できます。書いたコードはローカルストレージに保存されます。\nまた、保存容量は約5MBまでくらいなので、500万文字くらい書いたら保存できないかもしれません。そんなことないかもしれんが。まあ便利に使ってください。</p>\n</div>\n</body>\n</html>">説明</option>
+      <option value="<!DOCTYPE html>\n<html lang=\dja\d>\n<head>\n<meta charset=\dUTF-8\d>\n<meta name=\dviewport\d content=\dwidth=device-width, initial-scale=1.0\d>\n<link rel=\dpreconnect\d href=\dhttps://fonts.googleapis.com\d>\n<link rel=\dpreconnect\d href=\dhttps://fonts.gstatic.com\d crossorigin>\n<link href=\dhttps://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap\d rel=\dstylesheet\d>\n<style>\nbody {\n  background: black;\n  color: white;\n  font-family: \dKiwi Maru\d, Arial, sans-serif;\n}\n\n.pickup {\n  color: #ffffff;\n  text-shadow: 0 0 5px white, 0 0 5px white, 0 0 5px white;\n}\n\n.typing {\n  white-space: nowrap;\n  overflow: hidden;\n  display: inline-block;\n  border-right: 3px solid;\n  animation: typing 6s steps(90, end) forwards, blink-caret 0.5s step-end infinite;\n}\n\n.gold {\n   background: linear-gradient(0deg, #cccc00, #cccc00, #bbbb00, #ffffcc, #bbbb00, #aaaa00);\n  -webkit-background-clip: text;\n  color: transparent;\n  font-size: 20px;\n  text-shadow: 0 0 5px gold, 0 0 5px white, 0 0 5px gold;\n}\n\n.rainbow {\n  background: linear-gradient(180deg, #FF0000, #FF0000, #FF5500, #FFFF00, #00FF00, #0000FF, #FF00FF);\n  -webkit-background-clip: text;\n  color: transparent;\n  font-size: 20px;\n}\n\n.wave {\n  display: inline-block;\n  animation: waveAnimation 1.5s ease-in-out infinite;\n  display: inline-block;\n  font-size: 20px;\n}\n\n@keyframes waveAnimation {\n  0%, 100% {\n    transform: translateY(0);\n  }\n  25% {\n    transform: translateY(-10px);\n  }\n  50% {\n    transform: translateY(10px);\n  }\n  75% {\n    transform: translateY(-10px);\n  }\n}\n\n.hidden {\n  visibility: hidden;\n}\n\n.visible {\n  visibility: visible;\n  animation: fadeIn 2s forwards;\n}\n\n@keyframes typing {\n  from { width: 0; }\n  to { width: 110%; }\n}\n\n@keyframes blink-caret {\n  50% { border-color: transparent; }\n}\n\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n</style>\n<script>\ndocument.addEventListener(\dDOMContentLoaded\d, function() {\n  const lines = document.querySelectorAll('.line');\n  lines[0].addEventListener(\danimationend\d, () => {\n    lines[1].classList.replace('hidden', 'visible');\n    setTimeout(() => {\n      lines[2].classList.replace('hidden', 'visible');\n      setTimeout(() => {\n        lines[3].classList.replace('hidden', 'visible');\n      }, 2000);\n    }, 2000);\n  });\n});\n</script>\n</head>\n<body>\n<p class=\dtyping line line1\d><span style=\dcolor: #f0f\d>CSS(style要素)</span>を使うと、<span class=\dpickup\d>様々なスタイル</span>を表現することができます。</p>\n<p class=\dline hidden line2 gold\d>金色の文字や、</p>\n<p class=\dline hidden line3 rainbow\d>虹色に光るグラデーションの文字、</p>\n<p class=\dline hidden line4\d>\n  <span class=\dwave\d style=\danimation-delay: 0s\d>波</span>\n  <span class=\dwave\d style=\danimation-delay: 0.1s\d>打</span>\n  <span class=\dwave\d style=\danimation-delay: 0.2s\d>つ</span>\n  <span class=\dwave\d style=\danimation-delay: 0.3s\d>よ</span>\n  <span class=\dwave\d style=\danimation-delay: 0.4s\d>う</span>\n  <span class=\dwave\d style=\danimation-delay: 0.5s\d>な</span>\n  <span class=\dwave\d style=\danimation-delay: 0.6s\d>文</span>\n  <span class=\dwave\d style=\danimation-delay: 0.7s\d>字</span>\n  <span class=\dwave\d style=\danimation-delay: 0.8s\d>を</span>\n  <span class=\dwave\d style=\danimation-delay: 0.9s\d>作</span>\n  <span class=\dwave\d style=\danimation-delay: 1s\d>る</span>\n  <span class=\dwave\d style=\danimation-delay: 1.1s\d>こ</span>\n  <span class=\dwave\d style=\danimation-delay: 1.2s\d>と</span>\n  <span class=\dwave\d style=\danimation-delay: 1.3s\d>も</span>\n  <span class=\dwave\d style=\danimation-delay: 1.4s\d>で</span>\n  <span class=\dwave\d style=\danimation-delay: 1.5s\d>き</span>\n  <span class=\dwave\d style=\danimation-delay: 1.6s\d>ま</span>\n  <span class=\dwave\d style=\danimation-delay: 1.7s\d>す</span>\n  <span class=\dwave\d style=\danimation-delay: 1.8s\d>。</span>\n</p>\n</body>\n</html>">CSSデザイン</option>
+      <option value="<!DOCTYPE html>\n<html lang=\dja\d>\n<head>\n<meta charset=\dUTF-8\d>\n<meta name=\dviewport\d content=\dwidth=device-width, initial-scale=1.0\d>\n<style>\n</style>\n</head>\n<body>\n</body>\n</html>">構造テンプレート</option>
+    </select>
   </div>
 
   <textarea id="htmlInput" placeholder="htmlコードを入力"></textarea>
@@ -59,12 +70,14 @@
     function runHtml() {
       const htmlInput = document.getElementById('htmlInput').value;
       const previewContainer = document.getElementById('previewContainer');
+      const iframeWidth = document.getElementById('iframeWidth').value;
+      const iframeHeight = document.getElementById('iframeHeight').value;
 
       previewContainer.innerHTML = '';
 
       const iframe = document.createElement('iframe');
-      iframe.width = '100%';
-      iframe.height = '500px';
+      iframe.style.width = iframeWidth;
+      iframe.style.height = iframeHeight;
 
       iframe.srcdoc = htmlInput;
 
@@ -72,57 +85,91 @@
     }
 
     function saveHtml() {
+      const slot = document.getElementById('slotSelector').value;
       const htmlInput = document.getElementById('htmlInput').value;
-      const confirmation = confirm('htmlコードを保存しますか？\n現在保存されている内容は上書きされます。');
-      if (confirmation) {
-        localStorage.setItem('savedHtmlCode', htmlInput);
-        alert('htmlコードが保存されました！');
-      }
+      const storageKey = slot == 0 ? 'savedHtmlCode' : `savedHtmlCode-${Number(slot) + 1}`;
+      
+      localStorage.setItem(storageKey, htmlInput);
+      alert(`スロット${Number(slot) + 1}に保存しました。`);
+      updateSlotSelector();
     }
 
     function loadHtml() {
-      const savedHtmlCode = localStorage.getItem('savedHtmlCode');
-      if (savedHtmlCode) {
-        const confirmation = confirm('保存されたhtmlコードが見つかりました。\nhtmlコードを読み込みますか？\n現在書かれている内容は上書きされます。');
-        if (confirmation) {
-          document.getElementById('htmlInput').value = savedHtmlCode;
-          alert('htmlコードが読み込まれました！');
-        }
+      const slot = document.getElementById('slotSelector').value;
+      const storageKey = slot == 0 ? 'savedHtmlCode' : `savedHtmlCode-${Number(slot) + 1}`;
+      const savedHtml = localStorage.getItem(storageKey);
+
+      if (savedHtml) {
+        document.getElementById('htmlInput').value = savedHtml;
       } else {
-        alert('保存されたhtmlコードがありません。');
+        alert(`スロット${Number(slot) + 1}には保存されていません。`);
       }
     }
 
-    function openMenu() {
-      const menuContainer = document.querySelector('.menu-container');
-      menuContainer.classList.toggle('active');
+    function applyIframeSize() {
+      runHtml();
     }
 
-    function changeBgColor(color) {
-      document.body.style.backgroundColor = color;
-    }
-
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    window.onload = function() {
-      const codeParam = getQueryParam('code');
-      const bgColorParam = getQueryParam('bgcolor');
-
-      if (codeParam) {
-        document.getElementById('htmlInput').value = decodeURIComponent(codeParam);
-        runHtml();
+    function insertTemplate() {
+      const templateSelector = document.getElementById('templateSelector');
+      const selectedTemplate = templateSelector.value.replace(/\\n/g,'\n').replace(/\\d/g,'"');
+      if (selectedTemplate) {
+        document.getElementById('htmlInput').value = selectedTemplate;
+        templateSelector.selectedIndex = 0;
       }
+    }
 
-      if (bgColorParam) {
-        const colorPicker = document.getElementById('bgcolorPicker');
-        colorPicker.value = decodeURIComponent(bgColorParam);
-        colorPicker.style.display = 'inline-block';
-        changeBgColor(decodeURIComponent(bgColorParam));
+    function updateSlotSelector() {
+      const slotSelector = document.getElementById('slotSelector');
+      slotSelector.innerHTML = '';
+
+      for (let i = 0; i < 10; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        const storageKey = i == 0 ? 'savedHtmlCode' : `savedHtmlCode-${i + 1}`;
+        option.textContent = localStorage.getItem(storageKey) ? `スロット${i + 1}` : `スロット${i + 1} (未作成)`;
+        slotSelector.appendChild(option);
       }
-    };
+    }
+
+    function downloadHtml() {
+      const htmlContent = document.getElementById('htmlInput').value;
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'htmlrun.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadTxt() {
+      const htmlContent = document.getElementById('htmlInput').value;
+      const blob = new Blob([htmlContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  
+    function loadFromFile(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('htmlInput').value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    updateSlotSelector()
   </script>
 </body>
 </html>
