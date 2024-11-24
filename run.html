@@ -8,12 +8,6 @@
     body {
       background-color: #eeffbb;
     }
-    textarea {
-      width: 380px;
-      height: 200px;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-    }
     .controls, .save-controls {
       display: flex;
       align-items: center;
@@ -27,10 +21,14 @@
     .template-selector {
       margin-left: 10px;
     }
+   #editor {
+       margin-bottom: 10px;
+    }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.1/ace.js"></script>
 </head>
 <body>
-  <p><font size="5px">html実行</font><br>
+  <p><font size="5">html実行v1.1</font><br>
     <small>✅入力された内容はサーバーには送信されません。</small>
   </p>
   <div class="controls">
@@ -50,10 +48,9 @@
   </div>
 
   <div class="iframe-size-controls">
-    サイズ:&#x0020;<input type="text" id="iframeWidth" value="100%" oninput="applyIframeSize()">×
+    サイズ:&#x0020;<input type="text" id="iframeWidth" value="600px" oninput="applyIframeSize()">×
     <input type="text" id="iframeHeight" value="400px" oninput="applyIframeSize()">
-    
-    <!-- テンプレート選択 -->    
+       
     <select id="templateSelector" class="template-selector" onchange="insertTemplate()">
       <option value="">サンプルを選択</option>
       <option value="<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\dUTF-8\d>\n<meta name=\dviewport\d content=\dwidth=device-width, initial-scale=1.0\d>\n<style>\nbody {\n  background-color: azure;\n}\nh2 {\n  padding: 0.4em 0.5em;\n  color: #555555;\n  background: #f0f5f5;\n  border-left: solid 5px #55ccaa;\n  border-bottom: solid 3px #d7d7d7;\n}\n.box{\n    padding: 0.5em 1em;\n    margin: 2em 0;\n    color: #334455;\n    background: white;\n    border-top: solid 5px #556677;\n    box-shadow: 0 3px 5px #00000044;\n}\n.box p {\n    margin: 0; \n    padding: 0;\n}\n</style>\n</head>\n<body>\n<h2>html実行便利でしょ？</h2>\n<div class=\dbox\d>\n<p>このツールがあればエディターを開かずに済みますね！メモ帳としても利用できます()<br>\n何か実行したい場合は、Googleかなんかで「(実行したいもの) html サンプルコード」とかで調べたら出てくると思います。</p>\n</div>\n<h2>概要</h2>\n<div class=\dbox\d>\n<p>このページでは、htmlの<code>iframe</code>要素を使って、\nhtml内でhtmlを実行できます。また、cssやjavascriptもコード内に書けば実行できます。</p>\n</div>\n<h2>保存と読み込み</h2>\n<div class=\dbox\d>\n<p>書いた内容を10個まで保存できます。書いたコードはローカルストレージに保存されます。\nまた、保存容量は約5MBまでくらいなので、500万文字くらい書いたら保存できないかもしれません。そんなことないかもしれんが。まあ便利に使ってください。</p>\n</div>\n</body>\n</html>">説明</option>
@@ -62,13 +59,20 @@
     </select>
   </div>
 
-  <textarea id="htmlInput" placeholder="htmlコードを入力"></textarea>
+  <div id="editor" style="height: 230px; width: 600px;"></div>
+
   
   <div id="previewContainer"></div>
 
   <script>
+      const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");  
+        editor.session.setMode("ace/mode/html");
+      
+      
+      
     function runHtml() {
-      const htmlInput = document.getElementById('htmlInput').value;
+      const content = editor.getValue();
       const previewContainer = document.getElementById('previewContainer');
       const iframeWidth = document.getElementById('iframeWidth').value;
       const iframeHeight = document.getElementById('iframeHeight').value;
@@ -79,28 +83,31 @@
       iframe.style.width = iframeWidth;
       iframe.style.height = iframeHeight;
 
-      iframe.srcdoc = htmlInput;
+      iframe.srcdoc = content;
 
       previewContainer.appendChild(iframe);
     }
 
     function saveHtml() {
       const slot = document.getElementById('slotSelector').value;
-      const htmlInput = document.getElementById('htmlInput').value;
+      const editor = ace.edit("editor");
+      const content = editor.getValue();
       const storageKey = slot == 0 ? 'savedHtmlCode' : `savedHtmlCode-${Number(slot) + 1}`;
       
-      localStorage.setItem(storageKey, htmlInput);
+      localStorage.setItem(storageKey, content);
       alert(`スロット${Number(slot) + 1}に保存しました。`);
       updateSlotSelector();
     }
 
     function loadHtml() {
+      const editor = ace.edit("editor");
+      const content = editor.getValue();
       const slot = document.getElementById('slotSelector').value;
       const storageKey = slot == 0 ? 'savedHtmlCode' : `savedHtmlCode-${Number(slot) + 1}`;
       const savedHtml = localStorage.getItem(storageKey);
 
       if (savedHtml) {
-        document.getElementById('htmlInput').value = savedHtml;
+        editor.setValue(savedHtml);
       } else {
         alert(`スロット${Number(slot) + 1}には保存されていません。`);
       }
@@ -111,10 +118,11 @@
     }
 
     function insertTemplate() {
+      const editor = ace.edit("editor");
       const templateSelector = document.getElementById('templateSelector');
       const selectedTemplate = templateSelector.value.replace(/\\n/g,'\n').replace(/\\d/g,'"');
       if (selectedTemplate) {
-        document.getElementById('htmlInput').value = selectedTemplate;
+        editor.setValue(selectedTemplate);
         templateSelector.selectedIndex = 0;
       }
     }
@@ -133,7 +141,8 @@
     }
 
     function downloadHtml() {
-      const htmlContent = document.getElementById('htmlInput').value;
+      const editor = ace.edit("editor");
+      const htmlContent = editor.getValue();
       const blob = new Blob([htmlContent], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -146,7 +155,8 @@
     }
 
     function downloadTxt() {
-      const htmlContent = document.getElementById('htmlInput').value;
+      const editor = ace.edit("editor");
+      const htmlContent = editor.getValue();
       const blob = new Blob([htmlContent], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -163,7 +173,7 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          document.getElementById('htmlInput').value = e.target.result;
+        editor.setValue(e.target.result);
         };
         reader.readAsText(file);
       }
