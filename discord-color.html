@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Discordの色付きテキスト生成ツール</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Discordで使える色付きテキストを生成するツール">
+<style>
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #36393F;
+        text-align: center;
+        color: #FFF;
+    }
+
+
+    .flex {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #textarea {
+        width: 600px;
+        height: 200px;
+        border-radius: 5px;
+        resize: both;
+        overflow: auto;
+        text-align: left;
+        font-family: monospace;
+        background-color: #2F3136;
+        color: #B9BBBE;
+        border: #202225 1px solid;
+        padding: 5px;
+        display: inline-block;
+        
+        white-space: pre-wrap;
+        font-size: 0.875rem;
+        line-height: 1.125rem;
+        text-indent: 0;
+    }
+
+    .button {
+        min-height: 32px;
+        min-width: 32px;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        background-color: #4f545c;
+        font-size: 14px;
+        padding: 2px 16px;
+        cursor: pointer;
+        transition: background-color 250ms linear;
+    }
+
+    a,a:visited {
+        color: #00AFF4
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        background-color: #3BA55D;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 14px;
+        padding: 8px 16px;
+        top: 0;
+    }
+
+.ansi-1 { font-weight:700; text-decoration:none;       }
+.ansi-4 { font-weight:500; text-decoration:underline;  }
+
+.ansi-30 { color: #4f545c; }
+.ansi-31 { color: #dc322f; }
+.ansi-32 { color: #859900; }
+.ansi-33 { color: #b58900; }
+.ansi-34 { color: #268bd2; }
+.ansi-35 { color: #d33682; }
+.ansi-36 { color: #2aa198; }
+.ansi-37 { color: #ffffff; }
+
+.ansi-30-bg { background-color: #4f545c; }
+.ansi-31-bg { background-color: #dc322f; }
+.ansi-32-bg { background-color: #859900; }
+.ansi-33-bg { background-color: #b58900; }
+.ansi-34-bg { background-color: #268bd2; }
+.ansi-35-bg { background-color: #d33682; }
+.ansi-36-bg { background-color: #2aa198; }
+.ansi-37-bg { background-color: #ffffff; }
+
+.ansi-40 { background-color: #002b36; }
+.ansi-41 { background-color: #cb4b16; }
+.ansi-42 { background-color: #586e75; }
+.ansi-43 { background-color: #657b83; }
+.ansi-44 { background-color: #839496; }
+.ansi-45 { background-color: #6c71c4; }
+.ansi-46 { background-color: #93a1a1; }
+.ansi-47 { background-color: #fdf6e3; }
+
+button.ansi-30-bg, button.ansi-31-bg, button.ansi-32-bg, button.ansi-33-bg, button.ansi-34-bg, button.ansi-35-bg, button.ansi-36-bg, button.ansi-37-bg,
+button.ansi-40, button.ansi-41, button.ansi-42, button.ansi-43, button.ansi-44, button.ansi-45, button.ansi-46, button.ansi-47 {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  30% { transform: translate(-3px, 3px); }
+  40% { transform: translate(3px, -3px); }
+  60% { transform: translate(-3px, -3px); }
+  80% { transform: translate(3px, 3px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.shake { animation: shake 0.3s infinite linear; }
+
+</style>
+</head>
+<body>
+<h1><span style="color:#5865F2">Discord</span>の<span style="color:#D33682">色付き</span>テキスト生成ツール</h1>
+<button data-ansi="0" class="button style-button">リセット</button>
+<button data-ansi="1" class="button style-button ansi-1">太字</button>
+<button data-ansi="4" class="button style-button ansi-4">下線</button>
+<br><br>
+<strong>文字色</strong>
+<button data-ansi="30" class="button style-button ansi-30-bg">&nbsp;</button>
+<button data-ansi="31" class="button style-button ansi-31-bg">&nbsp;</button>
+<button data-ansi="32" class="button style-button ansi-32-bg">&nbsp;</button>
+<button data-ansi="33" class="button style-button ansi-33-bg">&nbsp;</button>
+<button data-ansi="34" class="button style-button ansi-34-bg">&nbsp;</button>
+<button data-ansi="35" class="button style-button ansi-35-bg">&nbsp;</button>
+<button data-ansi="36" class="button style-button ansi-36-bg">&nbsp;</button>
+<button data-ansi="37" class="button style-button ansi-37-bg">&nbsp;</button>
+<br><br>
+<strong>背景色</strong>
+<button data-ansi="40" class="button style-button ansi-40">&nbsp;</button>
+<button data-ansi="41" class="button style-button ansi-41">&nbsp;</button>
+<button data-ansi="42" class="button style-button ansi-42">&nbsp;</button>
+<button data-ansi="43" class="button style-button ansi-43">&nbsp;</button>
+<button data-ansi="44" class="button style-button ansi-44">&nbsp;</button>
+<button data-ansi="45" class="button style-button ansi-45">&nbsp;</button>
+<button data-ansi="46" class="button style-button ansi-46">&nbsp;</button>
+<button data-ansi="47" class="button style-button ansi-47">&nbsp;</button>
+<br><br>
+<div class="flex">
+    <div id="textarea" contenteditable="true"><span class="ansi-45"><span class="ansi-37">Discord</span></span>の<span class="ansi-31">色</span><span class="ansi-33">付</span><span class="ansi-32">き</span><span class="ansi-36">テ</span><span class="ansi-34">キ</span><span class="ansi-35">ス</span><span class="ansi-37">ト</span>生成ツールへ<span class="ansi-33">ようこそ</span>！</div>
+</div>
+<br>
+<button class="button copy">コピー</button>
+<br>
+<br>
+<small>これは非公式ツールです。Discordが作成または承認されたものではありません。</small>
+<div class="tooltip">Tooltip</div>
+<script type="text/javascript">
+    const textarea = document.querySelector("#textarea");
+    const copybtn = document.querySelector(".button.copy");
+    const tooltip = document.querySelector(".tooltip");
+
+    const tooltipTexts = {
+    "30": "濃い灰色 (33%) #4F545C",
+    "31": "赤  #DC322F",
+    "32": "黄緑 #859900",
+    "33": "金色 #B58900",
+    "34": "青 #268BD2",
+    "35": "ピンク #D33682",
+    "36": "青緑 #2AA198",
+    "37": "白 #FFFFFF",
+
+    "40": "紺色 #002B36",
+    "41": "オレンジ #CB4B16",
+    "42": "灰色 (40%) #586E75",
+    "43": "灰色 (45%) #657B83",
+    "44": "薄い灰色 (55%) #839496",
+    "45": "青紫 #6C71C4",
+    "46": "薄い灰色 (60%) #93A1A1",
+    "47": "クリームホワイト #FDF6E3",
+  };
+
+
+    // Some basic escaping of pasted HTML tags, not ideal but good enough for this situation.
+    textarea.oninput = () => {
+        const base = textarea.innerHTML.replace(/<(\/?(br|span|span class="ansi-[0-9]*"))>/g,"[$1]");
+        if (base.includes("<") || base.includes(">")) textarea.innerHTML = base.replace(/<.*?>/g,"").replace(/[<>]/g,"").replace(/\[(\/?(br|span|span class="ansi-[0-9]*"))\]/g,"<$1>");
+    };
+
+    // https://stackoverflow.com/a/61237402
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            document.execCommand('insertLineBreak')
+            event.preventDefault()
+        }
+    });
+
+    document.querySelectorAll(".style-button").forEach((btn) => {
+        btn.onclick = () => {
+            if (!btn.dataset.ansi) {
+                textarea.innerText = textarea.innerText;
+              return;
+            }
+
+            const selection = window.getSelection();
+            const text = window.getSelection().toString();
+            
+            const span = document.createElement("span");
+            span.innerText = text;
+            span.classList.add(`ansi-${btn.dataset.ansi}`);
+
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(span);
+
+            range.selectNodeContents(span);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        };
+        btn.onmouseenter = () => {
+            if (!(btn.dataset.ansi > 4)) return;
+            const rect = btn.getBoundingClientRect();
+            tooltip.style.display = "block";
+            tooltip.innerText = tooltipTexts[btn.dataset.ansi];
+            tooltip.style.top = `${rect.top - 36}px`;
+            tooltip.style.left = `${rect.left - tooltip.clientWidth/2 + btn.clientWidth/2}px`;
+        };
+        btn.onmouseleave = () => {
+            tooltip.style.display = "none";
+        };
+    });
+
+    function nodesToANSI(nodes, states) {
+        let text = ""
+        for (const node of nodes) {
+            if (node.nodeType === 3) {
+                text += node.textContent;
+                continue;
+            }
+            if (node.nodeName === "BR") {
+                text += "\n";
+                continue;   
+            }
+            const ansiCode = +(node.className.split("-")[1]);
+            const newState = Object.assign({}, states.at(-1));
+
+            if (ansiCode < 30) newState.st = ansiCode;
+            if (ansiCode >= 30 && ansiCode < 40) newState.fg = ansiCode;
+            if (ansiCode >= 40) newState.bg = ansiCode;
+
+            states.push(newState)
+            text += `\x1b[${newState.st};${(ansiCode >= 40) ? newState.bg : newState.fg}m`;
+            text += nodesToANSI(node.childNodes, states);
+            states.pop()
+            text += `\x1b[0m`;
+            if (states.at(-1).fg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).fg}m`;
+            if (states.at(-1).bg !== 2) text += `\x1b[${states.at(-1).st};${states.at(-1).bg}m`;
+        }
+        return text;
+    }
+
+    let copyCount = 0;
+    let copyTimeout = null;
+
+    copybtn.onclick = () => {
+        const toCopy = "```ansi\n" + nodesToANSI(textarea.childNodes, [{ fg: 2, bg: 2, st:2 }]) + "\n```";
+        navigator.clipboard.writeText(toCopy).then(() => {
+            if (copyTimeout) clearTimeout(copyTimeout);
+
+            const funnyCopyMessages = copybtn.innerText = ["コピーされました！", "ダブルコピー！", "トリプルコピー！", "連続コピー！", "コピー記録更新！", "コピーの天才！", "誰にも止められない！", "超絶コピー記録！", "コピーモンスター!!!", "神レベル!!!", "神越え!!!", "神越え!!!!"];
+
+            copybtn.style.backgroundColor = (copyCount <= 8) ? "#3BA55D" : "#ED4245";
+            if (copyCount > 8) copybtn.classList.add('shake')
+            else copybtn.classList.remove('shake')
+            copybtn.innerText = funnyCopyMessages[copyCount];
+            copyCount = Math.min(11, copyCount + 1);
+            copyTimeout = setTimeout(() => {
+                copyCount = 0;
+                copybtn.style.backgroundColor = null;
+                copybtn.innerText = "コピー";
+                copybtn.classList.remove('shake')
+            }, 2000)
+
+        }, (err) => {
+            // We don't need to stop the users if they get a little too excited about the button
+            if (copyCount > 2) return;
+            alert("Copying failed for some reason, let's try showing an alert, maybe you can copy it instead.");
+            alert(toCopy);
+        });
+    }
+</script>
+</body>
+</html>
